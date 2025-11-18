@@ -1,5 +1,9 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import ProtectedRoute from './ProtectedRoute';
+import Login from '../pages/Login';
+import Signup from '../pages/Signup';
+import Callback from '../pages/Callback';
 
 // Simple placeholder pages for initial scaffolding
 const Home = () => (
@@ -32,14 +36,24 @@ const Playlists = () => (
 
 // PUBLIC_INTERFACE
 export default function AppRouter() {
-  /** Router configuration with core app routes. */
+  /** Router configuration with core app routes and auth pages. */
   return (
     <Suspense fallback={<div className="loading">Loading...</div>}>
       <Routes>
+        {/* Public routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/auth/callback" element={<Callback />} />
+
+        {/* Some routes can remain public */}
         <Route path="/" element={<Home />} />
         <Route path="/browse" element={<Browse />} />
-        <Route path="/library" element={<Library />} />
-        <Route path="/playlists" element={<Playlists />} />
+
+        {/* Protected routes */}
+        <Route path="/library" element={<ProtectedRoute element={<Library />} />} />
+        <Route path="/playlists" element={<ProtectedRoute element={<Playlists />} />} />
+
+        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>
