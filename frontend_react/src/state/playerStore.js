@@ -95,6 +95,20 @@ export function PlayerProvider({ children }) {
   const persisted = useMemo(loadPersisted, []);
   const [state, dispatch] = useReducer(reducer, { ...initial, ...persisted });
   const autoAdvanceRef = useRef(false);
+  // Also hydrate with app settings defaultVolume on first mount
+  useEffect(() => {
+    try {
+      const s = JSON.parse(window.localStorage.getItem('app.settings.v1') || 'null');
+      const vol = typeof s?.defaultVolume === 'number' ? Math.min(1, Math.max(0, s.defaultVolume / 100)) : undefined;
+      if (typeof vol === 'number') {
+        dispatch({ type: A.SET_SETTINGS, patch: { volume: vol } });
+      }
+    } catch {
+      // ignore
+    }
+    // run only once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Sync audio element with settings
   useEffect(() => {
