@@ -1,5 +1,8 @@
 /* Ocean Professional Theme */
-/* Global design tokens */
+/* Global design tokens
+   Accessibility: Use high-contrast text (#111827) on white surfaces and ensure focus-visible rings.
+   Gradients: Prefer subtle blue-to-gray tints for depth without distraction.
+*/
 :root {
   /* Core palette */
   --primary: #2563EB;

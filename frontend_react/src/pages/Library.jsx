@@ -5,6 +5,7 @@ import AlbumGrid from '../components/AlbumGrid';
 import TrackList from '../components/TrackList';
 import { usePagination } from '../hooks/usePagination';
 import { usePlayer } from '../state/playerStore';
+import EmptyState from '../components/EmptyState';
 
 /**
  * PUBLIC_INTERFACE
@@ -48,32 +49,101 @@ export default function Library() {
 
       <section style={{ marginTop: 16 }}>
         <div style={sectionHeader}><h2 style={h2}>Playlists</h2></div>
-        <PlaylistList
-          playlists={playlists.items}
-          loading={playlists.loading && playlists.items.length === 0}
-          onSelect={() => {}}
-        />
+        {(!playlists.loading && playlists.items.length === 0) ? (
+          <EmptyState
+            title="No playlists yet"
+            description="Create a playlist to save your favorite tracks."
+            action={
+              <a
+                href="/playlists"
+                style={{
+                  background: '#2563EB',
+                  color: '#fff',
+                  padding: '0.6rem 0.9rem',
+                  borderRadius: 8,
+                  textDecoration: 'none',
+                  fontWeight: 700,
+                  boxShadow: '0 8px 20px rgba(37,99,235,0.25)'
+                }}
+              >
+                Create or view playlists
+              </a>
+            }
+          />
+        ) : (
+          <PlaylistList
+            playlists={playlists.items}
+            loading={playlists.loading && playlists.items.length === 0}
+            onSelect={() => {}}
+          />
+        )}
         {playlists.error && <div role="alert" style={{ color: 'var(--error)' }}>{playlists.error}</div>}
       </section>
 
       <section style={{ marginTop: 16 }}>
         <div style={sectionHeader}><h2 style={h2}>Albums</h2></div>
-        <AlbumGrid
-          albums={albums.items}
-          loading={albums.loading && albums.items.length === 0}
-          onSelect={() => {}}
-        />
+        {(!albums.loading && albums.items.length === 0) ? (
+          <EmptyState
+            title="No saved albums"
+            description="Save albums you love to quickly find them here."
+            action={
+              <a
+                href="/browse"
+                style={{
+                  background: '#2563EB',
+                  color: '#fff',
+                  padding: '0.6rem 0.9rem',
+                  borderRadius: 8,
+                  textDecoration: 'none',
+                  fontWeight: 700,
+                  boxShadow: '0 8px 20px rgba(37,99,235,0.25)'
+                }}
+              >
+                Discover albums
+              </a>
+            }
+          />
+        ) : (
+          <AlbumGrid
+            albums={albums.items}
+            loading={albums.loading && albums.items.length === 0}
+            onSelect={() => {}}
+          />
+        )}
         {albums.error && <div role="alert" style={{ color: 'var(--error)' }}>{albums.error}</div>}
       </section>
 
       <section style={{ marginTop: 16 }}>
         <div style={sectionHeader}><h2 style={h2}>Liked Songs</h2></div>
-        <TrackList
-          tracks={tracks.items}
-          loading={tracks.loading && tracks.items.length === 0}
-          onPlay={(t) => playTrack(mapTrack(t))}
-          onAddToPlaylist={() => {}}
-        />
+        {(!tracks.loading && tracks.items.length === 0) ? (
+          <EmptyState
+            title="No liked songs"
+            description="Like songs to build your collection."
+            action={
+              <a
+                href="/browse"
+                style={{
+                  background: '#2563EB',
+                  color: '#fff',
+                  padding: '0.6rem 0.9rem',
+                  borderRadius: 8,
+                  textDecoration: 'none',
+                  fontWeight: 700,
+                  boxShadow: '0 8px 20px rgba(37,99,235,0.25)'
+                }}
+              >
+                Explore tracks
+              </a>
+            }
+          />
+        ) : (
+          <TrackList
+            tracks={tracks.items}
+            loading={tracks.loading && tracks.items.length === 0}
+            onPlay={(t) => playTrack(mapTrack(t))}
+            onAddToPlaylist={() => {}}
+          />
+        )}
         {tracks.error && <div role="alert" style={{ color: 'var(--error)' }}>{tracks.error}</div>}
       </section>
     </div>

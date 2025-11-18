@@ -2,19 +2,22 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import AppRouter from './routes/AppRouter';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 /**
  * PUBLIC_INTERFACE
  * App: Root component wiring Router and MainLayout.
- * Provides the application shell for all pages.
+ * Wraps content with ErrorBoundary to provide robust runtime error handling.
  */
 function App() {
   return (
-    <BrowserRouter>
-      <MainLayout>
-        <AppRouter />
-      </MainLayout>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <MainLayout>
+          <AppRouter />
+        </MainLayout>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 
