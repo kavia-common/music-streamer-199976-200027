@@ -21,7 +21,7 @@ export default function Sidebar({ isOpen, onLinkClick }) {
           <span className="nav-ico">📚</span>
           <span className="nav-text">Library</span>
         </NavLink>
-        <NavLink to="/playlists" className="nav-link" onClick={onLinkClick}>
+        <NavLink to="/playlists/featured" className="nav-link" onClick={onLinkClick}>
           <span className="nav-ico">🎵</span>
           <span className="nav-text">Playlists</span>
         </NavLink>

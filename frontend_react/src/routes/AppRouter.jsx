@@ -4,37 +4,19 @@ import ProtectedRoute from './ProtectedRoute';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
 import Callback from '../pages/Callback';
+import Home from '../pages/Home';
+import Browse from '../pages/Browse';
+import Search from '../pages/Search';
+import Library from '../pages/Library';
+import PlaylistDetail from '../pages/PlaylistDetail';
 
-// Simple placeholder pages for initial scaffolding
-const Home = () => (
-  <div className="page">
-    <h1 className="page-title">Home</h1>
-    <p className="page-desc">Discover new music and top charts.</p>
-  </div>
-);
-
-const Browse = () => (
-  <div className="page">
-    <h1 className="page-title">Browse</h1>
-    <p className="page-desc">Explore genres, new releases, and podcasts.</p>
-  </div>
-);
-
-const Library = () => (
-  <div className="page">
-    <h1 className="page-title">Your Library</h1>
-    <p className="page-desc">Albums, artists, and saved songs.</p>
-  </div>
-);
-
-const Playlists = () => (
-  <div className="page">
-    <h1 className="page-title">Playlists</h1>
-    <p className="page-desc">Create and manage your playlists.</p>
-  </div>
-);
-
-// PUBLIC_INTERFACE
+/**
+ * PUBLIC_INTERFACE
+ * AppRouter: Central routing table for the application.
+ * Routes:
+ * - Public: /, /browse, /search, /login, /signup, /auth/callback
+ * - Protected: /library, /playlists/:id
+ */
 export default function AppRouter() {
   /** Router configuration with core app routes and auth pages. */
   return (
@@ -44,14 +26,13 @@ export default function AppRouter() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/auth/callback" element={<Callback />} />
-
-        {/* Some routes can remain public */}
         <Route path="/" element={<Home />} />
         <Route path="/browse" element={<Browse />} />
+        <Route path="/search" element={<Search />} />
 
         {/* Protected routes */}
         <Route path="/library" element={<ProtectedRoute element={<Library />} />} />
-        <Route path="/playlists" element={<ProtectedRoute element={<Playlists />} />} />
+        <Route path="/playlists/:id" element={<ProtectedRoute element={<PlaylistDetail />} />} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
