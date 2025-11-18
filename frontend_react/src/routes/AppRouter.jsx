@@ -14,6 +14,7 @@ import Profile from '../pages/Profile';
 import Settings from '../pages/Settings';
 import NotFound from '../pages/NotFound';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import usePageView from '../hooks/usePageView';
 
 /**
  * PUBLIC_INTERFACE
@@ -22,8 +23,12 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
  * - Public: /, /browse, /search, /login, /signup, /auth/callback
  * - Protected: /library, /playlists, /playlists/:id, /profile, /settings
  * Adds a catch-all 404 route and wraps content routes with ErrorBoundary.
+ * Also triggers a page view telemetry event on route changes via usePageView().
  */
 export default function AppRouter() {
+  // Trigger page view logs on navigation changes
+  usePageView();
+
   return (
     <Suspense fallback={<div className="loading">Loading...</div>}>
       <Routes>
