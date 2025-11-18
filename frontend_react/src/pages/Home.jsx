@@ -5,6 +5,7 @@ import ArtistRow from '../components/ArtistRow';
 import TrackList from '../components/TrackList';
 import Button from '../components/ui/Button';
 import { usePagination, useInfiniteScroll } from '../hooks/usePagination';
+import { usePlayer } from '../state/playerStore';
 
 /**
  * PUBLIC_INTERFACE
@@ -13,6 +14,7 @@ import { usePagination, useInfiniteScroll } from '../hooks/usePagination';
  */
 export default function Home() {
   const { api } = useAuth();
+  const { playTrack } = usePlayer();
 
   const fetchAlbums = useCallback(
     async ({ page, pageSize, signal }) => {
@@ -90,7 +92,7 @@ export default function Home() {
         <TrackList
           tracks={tracks.items}
           loading={tracks.loading && tracks.items.length === 0}
-          onPlay={() => {}}
+          onPlay={(t) => playTrack(mapTrack(t))}
           onAddToPlaylist={() => {}}
         />
         {tracks.error && (
@@ -111,6 +113,14 @@ export default function Home() {
       </section>
     </div>
   );
+}
+
+function mapTrack(t) {
+  // normalize to include audioUrl where feasible; backend field name may vary
+  return {
+    ...t,
+    audioUrl: t.audioUrl || t.streamUrl || t.url || t.src,
+  };
 }
 
 function normalizeList(data) {

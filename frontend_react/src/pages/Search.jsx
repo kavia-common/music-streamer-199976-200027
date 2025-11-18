@@ -6,6 +6,7 @@ import AlbumGrid from '../components/AlbumGrid';
 import TrackList from '../components/TrackList';
 import ArtistRow from '../components/ArtistRow';
 import Skeleton from '../components/ui/Skeleton';
+import { usePlayer } from '../state/playerStore';
 
 /**
  * PUBLIC_INTERFACE
@@ -13,6 +14,7 @@ import Skeleton from '../components/ui/Skeleton';
  */
 export default function Search() {
   const { api } = useAuth();
+  const { playTrack } = usePlayer();
   const [q, setQ] = useState('');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState({ tracks: [], albums: [], artists: [] });
@@ -81,7 +83,11 @@ export default function Search() {
           </div>
         ) : (
           <div style={{ marginTop: 8 }}>
-            <TrackList tracks={results.tracks} onPlay={() => {}} onAddToPlaylist={() => {}} />
+            <TrackList
+              tracks={results.tracks}
+              onPlay={(t) => playTrack(mapTrack(t))}
+              onAddToPlaylist={() => {}}
+            />
           </div>
         )}
       </section>
@@ -117,4 +123,7 @@ export default function Search() {
 
 function toArray(x) {
   return Array.isArray(x) ? x : Array.isArray(x?.items) ? x.items : [];
+}
+function mapTrack(t) {
+  return { ...t, audioUrl: t.audioUrl || t.streamUrl || t.url || t.src };
 }

@@ -4,6 +4,7 @@ import PlaylistList from '../components/PlaylistList';
 import AlbumGrid from '../components/AlbumGrid';
 import TrackList from '../components/TrackList';
 import { usePagination } from '../hooks/usePagination';
+import { usePlayer } from '../state/playerStore';
 
 /**
  * PUBLIC_INTERFACE
@@ -11,6 +12,7 @@ import { usePagination } from '../hooks/usePagination';
  */
 export default function Library() {
   const { api } = useAuth();
+  const { playTrack } = usePlayer();
 
   const fetchPlaylists = useCallback(
     async ({ page, pageSize, signal }) => {
@@ -69,13 +71,17 @@ export default function Library() {
         <TrackList
           tracks={tracks.items}
           loading={tracks.loading && tracks.items.length === 0}
-          onPlay={() => {}}
+          onPlay={(t) => playTrack(mapTrack(t))}
           onAddToPlaylist={() => {}}
         />
         {tracks.error && <div role="alert" style={{ color: 'var(--error)' }}>{tracks.error}</div>}
       </section>
     </div>
   );
+}
+
+function mapTrack(t) {
+  return { ...t, audioUrl: t.audioUrl || t.streamUrl || t.url || t.src };
 }
 
 function normalizeList(data) {

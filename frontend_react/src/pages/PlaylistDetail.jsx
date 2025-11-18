@@ -5,6 +5,7 @@ import Skeleton from '../components/ui/Skeleton';
 import Button from '../components/ui/Button';
 import TrackList from '../components/TrackList';
 import { usePagination } from '../hooks/usePagination';
+import { usePlayer } from '../state/playerStore';
 
 /**
  * PUBLIC_INTERFACE
@@ -13,6 +14,7 @@ import { usePagination } from '../hooks/usePagination';
 export default function PlaylistDetail() {
   const { id } = useParams();
   const { api } = useAuth();
+  const { playTrack, playPlaylist } = usePlayer();
   const [meta, setMeta] = useState(null);
   const [loadingMeta, setLoadingMeta] = useState(true);
   const [errorMeta, setErrorMeta] = useState('');
@@ -47,6 +49,11 @@ export default function PlaylistDetail() {
     [api, id]
   );
   const tracks = usePagination(fetchTracks, { pageSize: 20, enabled: !!id });
+
+  const handlePlayAll = () => {
+    const list = tracks.items.map(mapTrack);
+    playPlaylist(list);
+  };
 
   return (
     <div className="page">
@@ -93,7 +100,7 @@ export default function PlaylistDetail() {
             <p className="page-desc">{meta.description || ''}</p>
           </div>
           <div>
-            <Button>Play</Button>
+            <Button onClick={handlePlayAll}>Play</Button>
           </div>
         </div>
       ) : null}
@@ -102,7 +109,7 @@ export default function PlaylistDetail() {
         <TrackList
           tracks={tracks.items}
           loading={tracks.loading && tracks.items.length === 0}
-          onPlay={() => {}}
+          onPlay={(t) => playTrack(mapTrack(t))}
           onAddToPlaylist={() => {}}
         />
         {tracks.error && <div role="alert" style={{ color: 'var(--error)', marginTop: 8 }}>{tracks.error}</div>}
@@ -123,4 +130,8 @@ function normalizeList(data) {
   if (Array.isArray(data)) return { items: data, total: undefined };
   if (Array.isArray(data.items)) return { items: data.items, total: data.total };
   return { items: [], total: undefined };
+}
+
+function mapTrack(t) {
+  return { ...t, audioUrl: t.audioUrl || t.streamUrl || t.url || t.src };
 }
