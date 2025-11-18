@@ -10,6 +10,8 @@ import { usePlayer } from '../state/playerStore';
 /**
  * PUBLIC_INTERFACE
  * PlaylistDetail: Displays a single playlist with its tracks.
+ * Also listens for "playlist:add-track" events to allow adding a track from other pages
+ * to the currently open playlist, then broadcasts "playlists:updated" to refresh Sidebar.
  */
 export default function PlaylistDetail() {
   const { id } = useParams();
@@ -54,6 +56,31 @@ export default function PlaylistDetail() {
     const list = tracks.items.map(mapTrack);
     playPlaylist(list);
   };
+
+  // Allow other pages to dispatch add-to-this-playlist events
+  useEffect(() => {
+    function onAdd(ev) {
+      const track = ev?.detail?.track;
+      const playlistId = ev?.detail?.playlistId;
+      if (!track || !playlistId) return;
+      if (String(playlistId) !== String(id)) return;
+      // Optimistic append (local UI)
+      tracks.reset();
+      // Reload from server after posting for correctness
+      (async () => {
+        try {
+          await api.post(`/playlists/${encodeURIComponent(id)}/tracks`, { trackId: track.id });
+          window.dispatchEvent(new CustomEvent('playlists:updated'));
+          tracks.refresh();
+        } catch {
+          // ignore errors in cross-page add for now; the source page should show feedback
+        }
+      })();
+    }
+    window.addEventListener('playlist:add-track', onAdd);
+    return () => window.removeEventListener('playlist:add-track', onAdd);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api, id]);
 
   return (
     <div className="page">

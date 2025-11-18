@@ -9,13 +9,14 @@ import Browse from '../pages/Browse';
 import Search from '../pages/Search';
 import Library from '../pages/Library';
 import PlaylistDetail from '../pages/PlaylistDetail';
+import Playlists from '../pages/Playlists';
 
 /**
  * PUBLIC_INTERFACE
  * AppRouter: Central routing table for the application.
  * Routes:
  * - Public: /, /browse, /search, /login, /signup, /auth/callback
- * - Protected: /library, /playlists/:id
+ * - Protected: /library, /playlists, /playlists/:id
  */
 export default function AppRouter() {
   /** Router configuration with core app routes and auth pages. */
@@ -32,6 +33,7 @@ export default function AppRouter() {
 
         {/* Protected routes */}
         <Route path="/library" element={<ProtectedRoute element={<Library />} />} />
+        <Route path="/playlists" element={<ProtectedRoute element={<Playlists />} />} />
         <Route path="/playlists/:id" element={<ProtectedRoute element={<PlaylistDetail />} />} />
 
         {/* Fallback */}
